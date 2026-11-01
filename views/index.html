@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HackForge | Hackathon Registration</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="/">
+      <span class="logo-icon">&lt;/&gt;</span>
+      <span>HackForge</span>
+    </a>
+    <span class="event-label">HACKATHON 2026</span>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <span class="tag">BUILD. INNOVATE. COMPETE.</span>
+      <h1>Turn your idea<br>into <span>impact.</span></h1>
+      <p>Bring your best ideas to life. Register your team and join a community of innovators, developers and problem-solvers.</p>
+      <div class="event-info">
+        <div class="info-icon">01</div>
+        <div>
+          <strong>One team. One big idea.</strong>
+          <p>Register a team of 1–4 members.</p>
+        </div>
+      </div>
+      <div class="event-info">
+        <div class="info-icon">02</div>
+        <div>
+          <strong>Choose your challenge</strong>
+          <p>Pick a track that matches your idea.</p>
+        </div>
+      </div>
+      <div class="event-info">
+        <div class="info-icon">03</div>
+        <div>
+          <strong>Build something meaningful</strong>
+          <p>Submit your project concept to register.</p>
+        </div>
+      </div>
+      <div class="decorative-code" aria-hidden="true">
+        <span>function</span> innovate() {<br>
+        &nbsp;&nbsp;return <span>"the future"</span>;<br>
+        }
+      </div>
+    </section>
+
+    <section class="form-card">
+      <div class="form-heading">
+        <div>
+          <p class="eyebrow">TEAM APPLICATION</p>
+          <h2>Register your team</h2>
+          <p class="form-subtitle">Complete the details below to get started.</p>
+        </div>
+        <div class="step">01 <span>/ 01</span></div>
+      </div>
+
+      <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+      <form id="registrationForm">
+        <div class="field">
+          <label for="teamName">Team name <span>*</span></label>
+          <input id="teamName" name="teamName" type="text"
+            placeholder="e.g. CodeCrafters" required maxlength="40">
+          <small class="error" id="teamNameError"></small>
+        </div>
+
+        <div class="field">
+          <label for="leaderName">Team leader's full name <span>*</span></label>
+          <input id="leaderName" name="leaderName" type="text"
+            placeholder="Enter your full name" required maxlength="50">
+          <small class="error" id="leaderNameError"></small>
+        </div>
+
+        <div class="two-columns">
+          <div class="field">
+            <label for="email">Email address <span>*</span></label>
+            <input id="email" name="email" type="email"
+              placeholder="you@example.com" required>
+            <small class="error" id="emailError"></small>
+          </div>
+          <div class="field">
+            <label for="mobile">Mobile number <span>*</span></label>
+            <input id="mobile" name="mobile" type="tel"
+              placeholder="10-digit number" required maxlength="10">
+            <small class="error" id="mobileError"></small>
+          </div>
+        </div>
+
+        <div class="two-columns">
+          <div class="field">
+            <label for="teamSize">Team size <span>*</span></label>
+            <select id="teamSize" name="teamSize" required>
+              <option value="">Select members</option>
+              <option value="1">1 member</option>
+              <option value="2">2 members</option>
+              <option value="3">3 members</option>
+              <option value="4">4 members</option>
+            </select>
+            <small class="error" id="teamSizeError"></small>
+          </div>
+          <div class="field">
+            <label for="track">Hackathon track <span>*</span></label>
+            <select id="track" name="track" required>
+              <option value="">Choose a track</option>
+              <option>Web Development</option>
+              <option>Artificial Intelligence</option>
+              <option>Cybersecurity</option>
+              <option>Healthcare</option>
+              <option>FinTech</option>
+            </select>
+            <small class="error" id="trackError"></small>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="projectIdea">Project idea <span>*</span></label>
+          <textarea id="projectIdea" name="projectIdea" rows="4"
+            placeholder="Describe the problem you want to solve and your proposed solution (20–500 characters)."
+            required minlength="20" maxlength="500"></textarea>
+          <div class="textarea-footer">
+            <small class="error" id="projectIdeaError"></small>
+            <small id="charCount">0 / 500</small>
+          </div>
+        </div>
+
+        <button type="submit" id="submitButton">
+          Submit registration <span>→</span>
+        </button>
+        <p class="privacy-note">Your details are used for this practical demonstration only.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer>HackForge Registration · ExpressJS Server-Side Validation</footer>
+
+  <script>
+    const form = document.getElementById("registrationForm");
+    const notice = document.getElementById("notice");
+    const button = document.getElementById("submitButton");
+    const projectIdea = document.getElementById("projectIdea");
+    const charCount = document.getElementById("charCount");
+
+    const fields = [
+      "teamName", "leaderName", "email", "mobile",
+      "teamSize", "track", "projectIdea"
+    ];
+
+    projectIdea.addEventListener("input", () => {
+      charCount.textContent = `${projectIdea.value.length} / 500`;
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      notice.textContent = "";
+      notice.className = "notice";
+
+      fields.forEach((name) => {
+        document.getElementById(name + "Error").textContent = "";
+        document.getElementById(name).classList.remove("invalid");
+      });
+
+      button.disabled = true;
+      button.textContent = "Validating registration...";
+
+      try {
+        const response = await fetch("/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          Object.entries(result.errors || {}).forEach(([name, message]) => {
+            const errorElement = document.getElementById(name + "Error");
+            const inputElement = document.getElementById(name);
+
+            if (errorElement && inputElement) {
+              errorElement.textContent = message;
+              inputElement.classList.add("invalid");
+            }
+          });
+
+          notice.textContent = result.message;
+          notice.classList.add("error-notice");
+        } else {
+          notice.textContent = result.message;
+          notice.classList.add("success-notice");
+          form.reset();
+          charCount.textContent = "0 / 500";
+        }
+      } catch (error) {
+        notice.textContent = "Unable to connect to the server. Please try again.";
+        notice.classList.add("error-notice");
+      } finally {
+        button.disabled = false;
+        button.innerHTML = 'Submit registration <span>→</span>';
+      }
+    });
+  </script>
+</body>
+</html>

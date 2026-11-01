@@ -1,0 +1,13 @@
+
+{
+  "name": "hackathon-registration",
+  "version": "1.0.0",
+  "description": "Hackathon Registration System - ExpressJS Server-Side Validation Practical",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
